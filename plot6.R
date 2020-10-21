@@ -48,7 +48,7 @@ png('./plot6.png',width = 480,height = 480)
 g<-ggplot(data = totalyear, aes(x = year,y = total)) + 
         geom_point() +
         geom_line() +
-        facet_wrap(. ~ city,nrow = 1,ncol = 2)
+        facet_wrap(. ~ city,nrow = 2,ncol = 1)
         theme_bw() + 
         labs(title = 'Motor vehicle total emissions from 1999 to 2008') +
         labs(y = 'Total PM2.5 emission (ton)')  
