@@ -46,7 +46,7 @@ g<-ggplot(data = totalyear, aes(x = year,y = total)) +
         geom_point() +
         geom_line() +
         theme_bw() + 
-        labs(title = 'Moto vehicle total emissions from 1999 to 2008') +
+        labs(title = 'Motor vehicle total emissions from 1999 to 2008') +
         labs(y = 'Total PM2.5 emission (ton)')  
 print(g)
 
