@@ -35,7 +35,9 @@ nei <- left_join(x = neismry,y = neisrc,"SCC")
 #looking for rows of interest with reg ex
 ofinterest <- grepl('[vV]ehicle',nei$Short.Name)
  
-totalyear <- nei %>% filter(SCC.Level.One == 'Mobile Sources' & ofinterest) %>%
+totalyear <- nei %>% 
+        filter(SCC.Level.One == 'Mobile Sources' & ofinterest) %>%
+        filter(fips == '24510') %>%
         group_by(year) %>% summarise(total = sum(Emissions)) %>%
         select(year,total)
 
