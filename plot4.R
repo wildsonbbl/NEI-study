@@ -1,0 +1,53 @@
+library(dplyr)
+library(ggplot2)
+#Dowloading data and organizing it
+datadir <- './data'
+neidataurl<-'https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2FNEI_data.zip'
+neidatazip  <- './data/neidata.zip'
+neidatadir <- './data/neidata'
+
+if(!dir.exists(datadir)){
+        dir.create(datadir)
+}
+
+if(!file.exists(neidatazip)){
+        download.file(url = neidataurl,destfile = neidatazip,method = 'curl')
+}else if(!dir.exists(paths = neidatadir)){
+        dir.create(path = neidatadir)
+        unzip(zipfile = neidatazip,exdir = neidatadir)
+}
+
+
+#Reading the data into R
+datafilenames <- dir(neidatadir)
+filepaths<- list()
+for(fl in datafilenames){
+        column <- sub(pattern = '[.]rds$',replacement = '',x = fl)
+        filepaths[column] <- paste0(neidatadir,'/',fl)
+}
+
+neismry <- readRDS(filepaths[[2]])
+neisrc <- readRDS(filepaths[[1]])
+
+#Joining source and summary data 
+nei <- left_join(x = neismry,y = neisrc,"SCC")
+
+#looking for rows of interest with reg ex
+ofinterest <- grepl('[cC]omb.+[Cc]oal.+',nei$Short.Name)
+ 
+totalyear <- nei %>% filter(ofinterest) %>%
+        group_by(year) %>% summarise(total = sum(Emissions)) %>%
+        select(year,total)
+
+#plotting
+png('./plot4.png',width = 480,height = 480)  
+
+g<-ggplot(data = totalyear, aes(x = year,y = total)) + 
+        geom_point() +
+        geom_line() +
+        theme_bw() + 
+        labs(title = 'Coal combustion-related total emissions from 1999 to 2008') +
+        labs(y = 'Total PM2.5 emission (ton)')  
+print(g)
+
+dev.off()
